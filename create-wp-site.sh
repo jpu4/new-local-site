@@ -1,0 +1,145 @@
+#!/bin/bash
+
+# Check if WP-CLI is installed
+if ! command -v wp &> /dev/null
+then
+    echo "WP-CLI not found. Installing WP-CLI..."
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x wp-cli.phar
+    sudo mv wp-cli.phar /usr/local/bin/wp
+    if ! command -v wp &> /dev/null
+    then
+        echo "Failed to install WP-CLI. Exiting."
+        exit 1
+    fi
+    echo "WP-CLI installed successfully."
+fi
+
+# Check if a domain name is provided as an argument
+if [ -z "$1" ]; then
+  echo "Please provide a domain name as a parameter."
+  echo "Usage: ./update_wordpress.sh domain_name.local"
+  exit 1
+fi
+
+# Configuration paths
+conf_path="/etc/nginx/conf.d"
+web_root="/var/www"
+plugin_path="$web_root/plugins"  # Update this path with the actual path to your plugins
+
+# Permissions
+web_user="www-data"
+web_group="www-data"
+
+# Domain name parameter
+domain=$1
+
+# Database credentials
+db_user="my_local_dev_user"
+db_pass="my_local_dev_pass"
+db_name=${domain//./_}
+
+# Site credentials
+site_title="My WordPress Site"
+site_user=$db_user
+site_pass=$db_pass
+site_email="support@$domain"
+
+# Download the latest WordPress zip file
+wget https://wordpress.org/latest.zip -O wordpress-latest.zip
+
+# Check if the download was successful
+if [ $? -ne 0 ]; then
+  echo "Failed to download WordPress. Please check your internet connection."
+  exit 1
+fi
+
+# Unzip the latest WordPress zip file
+unzip -q wordpress-latest.zip
+
+# Check if unzip was successful
+if [ $? -ne 0 ]; then
+  echo "Failed to unzip WordPress. Please check the downloaded file."
+  exit 1
+fi
+
+# Rename the extracted wordpress folder to the domain name
+mv wordpress "$web_root/$domain"
+
+# Check if move was successful
+if [ $? -ne 0 ]; then
+  echo "Failed to move WordPress files. Please check permissions."
+  exit 1
+fi
+
+# Rename the config file
+mv "$web_root/$domain/wp-config-sample.php" "$web_root/$domain/wp-config.php"
+
+# Update /etc/hosts file
+echo "127.0.0.1 $domain" | sudo tee -a /etc/hosts
+
+# Copy and configure the nginx config file
+conf_template="$conf_path/wordpress.conf.template"
+conf_target="$conf_path/$domain.conf"
+sudo cp $conf_template $conf_target
+sudo sed -i "s/\[DOMAIN\]/$domain/g" $conf_target
+
+# Create a new MySQL database
+mysql -u root -p -e "CREATE DATABASE $db_name;"
+
+# Update wp-config.php with DB details
+sed -i "s/database_name_here/$db_name/g" "$web_root/$domain/wp-config.php"
+sed -i "s/username_here/$db_user/g" "$web_root/$domain/wp-config.php"
+sed -i "s/password_here/$db_pass/g" "$web_root/$domain/wp-config.php"
+
+# Fetch unique keys and salts
+salts=$(curl -s https://api.wordpress.org/secret-key/1.1/salt/)
+
+# Replace the placeholder salts in wp-config.php with the new salts
+# Using a here document to simplify inserting multiple lines
+sed -i "/AUTH_KEY/d" "$web_root/$domain/wp-config.php"
+sed -i "/SECURE_AUTH_KEY/d" "$web_root/$domain/wp-config.php"
+sed -i "/LOGGED_IN_KEY/d" "$web_root/$domain/wp-config.php"
+sed -i "/NONCE_KEY/d" "$web_root/$domain/wp-config.php"
+sed -i "/AUTH_SALT/d" "$web_root/$domain/wp-config.php"
+sed -i "/SECURE_AUTH_SALT/d" "$web_root/$domain/wp-config.php"
+sed -i "/LOGGED_IN_SALT/d" "$web_root/$domain/wp-config.php"
+sed -i "/NONCE_SALT/d" "$web_root/$domain/wp-config.php"
+
+# Insert the new salts
+sed -i "/#@-/r /dev/stdin" "$web_root/$domain/wp-config.php" <<< "$salts"
+
+# Add FS_METHOD direct to wp-config.php
+echo "define('FS_METHOD', 'direct');" | tee -a "$web_root/$domain/wp-config.php"
+
+# Delete akismet/ and hello.php from the plugins folder
+rm -rf "$web_root/$domain/wp-content/plugins/akismet"
+rm -f "$web_root/$domain/wp-content/plugins/hello.php"
+
+# Unzip all plugin zips from plugin_path to the plugins folder
+if [ -d "$plugin_path" ] && [ "$(ls -A $plugin_path/*.zip 2>/dev/null)" ]; then
+  for plugin_zip in $plugin_path/*.zip; do
+    unzip -q "$plugin_zip" -d "$web_root/$domain/wp-content/plugins"
+  done
+else
+  echo "No plugin zips found in $plugin_path"
+fi
+
+# Reset nginx
+sudo systemctl reload nginx
+
+# Install WordPress using WP-CLI
+sudo -u $web_user -i -- wp core install --path="$web_root/$domain" --url="http://$domain" --title="$site_title" --admin_user="$site_user" --admin_password="$site_pass" --admin_email="$site_email"
+
+# Update all plugins using WP-CLI
+sudo -u $web_user -i -- wp plugin update --all --path="$web_root/$domain"
+
+# Activate all plugins using WP-CLI
+sudo -u $web_user -i -- wp plugin activate --all --path="$web_root/$domain"
+
+# Clean up by removing the downloaded zip file
+rm wordpress-latest.zip
+
+sudo chown -R $web_user:$web_group $web_root/$domain/
+
+echo "Site $domain has been created and configured."
