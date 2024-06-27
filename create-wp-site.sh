@@ -125,6 +125,8 @@ else
   echo "No plugin zips found in $plugin_path"
 fi
 
+sudo chown -R $web_user:$web_group $web_root/$domain/
+
 # Reset nginx
 sudo systemctl reload nginx
 
