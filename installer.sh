@@ -80,5 +80,7 @@ chmod +x "$scripts_folder/create-site.sh" "$scripts_folder/create-laravel-site.s
 current_user=$(whoami)
 sudo chown -R $current_user:$current_user "$scripts_folder"
 sudo chown -R $web_user:$web_group "$sites_root"
+sudo chown -R $web_user:$web_group "$web_root/plugins"
+sudo chown -R $web_user:$web_group "$web_root/logs"
 
 echo "Installer script has completed successfully."
