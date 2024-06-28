@@ -150,9 +150,9 @@ sudo -u $web_user -i -- wp plugin activate --all --path="$site_root"
 find "$site_root" -type d -exec chmod 755 {} \;
 find "$site_root" -type f -exec chmod 644 {} \;
 chmod 640 "$site_root"/wp-config.php
-chmod 777 "$site_root"/wp-content/ai1wm-backups
-chmod 777 "$site_root"/wp-content/plugins
-chmod 777 "$site_root"/wp-content/uploads
+chmod -R 777 "$site_root"/wp-content/ai1wm-backups
+chmod -R 777 "$site_root"/wp-content/plugins
+chmod -R 777 "$site_root"/wp-content/uploads
 
 sudo chown -R $web_user:$web_group $site_root/
 
