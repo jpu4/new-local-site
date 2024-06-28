@@ -84,3 +84,4 @@ sudo chown -R $web_user:$web_group "$web_root/plugins"
 sudo chown -R $web_user:$web_group "$web_root/logs"
 
 echo "Installer script has completed successfully."
+cd "$scripts_folder"
