@@ -45,7 +45,7 @@ scripts_folder=${scripts_folder:-/var/www/scripts}
 mkdir -p "$scripts_folder"
 
 # Copy and update variables in the script files
-for script in create-site.sh create-laravel-site.sh create-wp-site.sh create-wp-sites-array.sh; do
+for script in create-site.sh create-laravel-site.sh create-wp-site.sh create-wp-sites-array.sh delete-site.sh; do
     if [ -f "$script" ]; then
         cp $script "$scripts_folder/"
         script_path="$scripts_folder/$(basename $script)"
@@ -74,7 +74,7 @@ echo "Configuration templates have been copied to $conf_path."
 echo "Scripts have been copied to $scripts_folder and configured with your settings."
 
 # Optional: Set execute permissions on the copied scripts
-chmod +x "$scripts_folder/create-site.sh" "$scripts_folder/create-laravel-site.sh" "$scripts_folder/create-wp-site.sh" "$scripts_folder/create-wp-sites-array.sh"
+chmod +x "$scripts_folder/create-site.sh" "$scripts_folder/create-laravel-site.sh" "$scripts_folder/create-wp-site.sh" "$scripts_folder/create-wp-sites-array.sh" "$scripts_folder/delete-site.sh"
 
 # Debugging: Print current user and scripts folder
 current_user=${SUDO_USER:-$(whoami)}
