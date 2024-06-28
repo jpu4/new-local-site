@@ -8,6 +8,19 @@ conf_path=${conf_path:-/etc/nginx/conf.d}
 read -p "Enter your web root directory (default: /var/www): " web_root
 web_root=${web_root:-/var/www}
 
+# Create the wordpress plugins folder if it doesn't exist
+mkdir -p "$web_root/plugins"
+
+# Create the logs folder if it doesn't exist
+mkdir -p "$web_root/logs"
+
+# Prompt user for the sites directory
+read -p "Enter your web sites directory (default: /var/www/sites): " sites_root
+sites_root=${sites_root:-/var/www/sites}
+
+# Create the sites folder if it doesn't exist
+mkdir -p $sites_root
+
 # Prompt user for the default web user
 read -p "Enter your web user (default: www-data): " web_user
 web_user=${web_user:-www-data}
@@ -31,12 +44,6 @@ scripts_folder=${scripts_folder:-/var/www/scripts}
 # Create the scripts folder if it doesn't exist
 mkdir -p "$scripts_folder"
 
-# Create the wordpress plugins folder if it doesn't exist
-mkdir -p "$web_root/plugins"
-
-# Create the logs folder if it doesn't exist
-mkdir -p "$web_root/logs"
-
 # Copy and update variables in the script files
 for script in create-site.sh create-laravel-site.sh create-wp-site.sh create-wp-sites-array.sh; do
     if [ -f "$script" ]; then
@@ -44,6 +51,7 @@ for script in create-site.sh create-laravel-site.sh create-wp-site.sh create-wp-
         script_path="$scripts_folder/$(basename $script)"
         sed -i "s|conf_path=.*|conf_path=\"$conf_path\"|" $script_path
         sed -i "s|web_root=.*|web_root=\"$web_root\"|" $script_path
+        sed -i "s|sites_root=.*|sites_root=\"$sites_root\"|" $script_path
         sed -i "s|web_user=.*|web_user=\"$web_user\"|" $script_path
         sed -i "s|web_group=.*|web_group=\"$web_group\"|" $script_path
         sed -i "s|db_user=.*|db_user=\"$db_user\"|" $script_path
