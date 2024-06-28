@@ -76,4 +76,8 @@ echo "Scripts have been copied to $scripts_folder and configured with your setti
 # Optional: Set execute permissions on the copied scripts
 chmod +x "$scripts_folder/create-site.sh" "$scripts_folder/create-laravel-site.sh" "$scripts_folder/create-wp-site.sh" "$scripts_folder/create-wp-sites-array.sh"
 
+# Change ownership of the scripts folder to the current user
+current_user=$(whoami)
+sudo chown -R $current_user:$current_user "$scripts_folder"
+
 echo "Installer script has completed successfully."
