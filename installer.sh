@@ -31,6 +31,9 @@ scripts_folder=${scripts_folder:-/var/www/scripts}
 # Create the scripts folder if it doesn't exist
 mkdir -p "$scripts_folder"
 
+# Create the wordpress plugins folder if it doesn't exist
+mkdir -p "$web_root/plugins"
+
 # Copy and update variables in the script files
 for script in create-site.sh create-laravel-site.sh create-wp-site.sh create-wp-sites-array.sh; do
     if [ -f "$script" ]; then
