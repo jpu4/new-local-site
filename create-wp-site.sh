@@ -147,6 +147,11 @@ sudo -u $web_user -i -- wp plugin update --all --path="$site_root"
 # Activate all plugins using WP-CLI
 sudo -u $web_user -i -- wp plugin activate --all --path="$site_root"
 
+find "$site_root" -type d -exec chmod 755 {} \;
+find "$site_root" -type f -exec chmod 644 {} \;
+chmod 600 "$site_root"/wp-config.php
+chmod 755 "$site_root"/wp-content/uploads
+
 sudo chown -R $web_user:$web_group $site_root/
 
 echo "Site $domain has been created and configured."
