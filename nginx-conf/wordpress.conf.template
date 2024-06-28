@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name [DOMAIN];
 
-    root [WEB_ROOT]/[DOMAIN];
+    root [WEB_ROOT];
     index index.php index.html index.htm;
 
     access_log [CONFIG_PATH]/logs/[DOMAIN]_access.log;
