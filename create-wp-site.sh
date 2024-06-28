@@ -86,6 +86,8 @@ conf_template="$conf_path/wordpress.conf.template"
 conf_target="$conf_path/$domain.conf"
 sudo cp $conf_template $conf_target
 sudo sed -i "s/\[DOMAIN\]/$domain/g" $conf_target
+sudo sed -i "s/\[WEB_ROOT\]/$web_root/g" $conf_target
+sudo sed -i "s/\[CONFIG_PATH\]/$conf_path/g" $conf_target
 
 # Create a new MySQL database
 mysql -u root -p -e "CREATE DATABASE $db_name;"

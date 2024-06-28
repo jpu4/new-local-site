@@ -1,0 +1,60 @@
+server {
+    listen 80;
+    server_name [DOMAIN];
+
+    root [WEB_ROOT]/[DOMAIN];
+    index index.php index.html index.htm;
+
+    access_log [CONFIG_PATH]/logs/[DOMAIN]_access.log;
+    error_log [CONFIG_PATH]/logs/[DOMAIN]_error.log;
+
+    # Main location block
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # Redirect server error pages to the static page /50x.html
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+
+    # Deny access to .htaccess files
+    location ~ /\.ht {
+        deny all;
+    }
+
+    # Cache static files for as long as possible
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|otf|eot|mp3|mp4|ogg|ogv|webm|htc)$ {
+        expires 365d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Pass PHP scripts to FastCGI server
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header X-XSS-Protection "1; mode=block";
+
+    # Disallow access to sensitive files
+    location ~* /(wp-config.php|xmlrpc.php|wp-admin/includes|wp-includes|wp-content/uploads/.*\.php|wp-content/plugins/.*\.php|wp-content/themes/.*\.php) {
+        deny all;
+    }
+
+    # Allow WordPress REST API access
+    location ~* /wp-json/ {
+        allow all;
+    }
+
+    # Allow access to admin-ajax.php
+    location ~* /wp-admin/admin-ajax.php {
+        allow all;
+    }
+}
