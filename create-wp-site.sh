@@ -18,7 +18,7 @@ fi
 # Check if a domain name is provided as an argument
 if [ -z "$1" ]; then
   echo "Please provide a domain name as a parameter."
-  echo "Usage: ./update_wordpress.sh domain_name.local"
+  echo "Usage: ./create-wp-site.sh domain_name.local"
   exit 1
 fi
 
@@ -45,13 +45,16 @@ site_user=$db_user
 site_pass=$db_pass
 site_email="support@$domain"
 
-# Download the latest WordPress zip file
-wget https://wordpress.org/latest.zip -O wordpress-latest.zip
-
-# Check if the download was successful
-if [ $? -ne 0 ]; then
-  echo "Failed to download WordPress. Please check your internet connection."
-  exit 1
+# Check if WordPress zip file exists, download if not
+if [ ! -f wordpress-latest.zip ]; then
+    echo "Downloading the latest WordPress zip file..."
+    wget https://wordpress.org/latest.zip -O wordpress-latest.zip
+    if [ $? -ne 0 ]; then
+        echo "Failed to download WordPress. Please check your internet connection."
+        exit 1
+    fi
+else
+    echo "WordPress zip file already exists. Skipping download."
 fi
 
 # Unzip the latest WordPress zip file
@@ -138,10 +141,5 @@ sudo -u $web_user -i -- wp plugin update --all --path="$web_root/$domain"
 
 # Activate all plugins using WP-CLI
 sudo -u $web_user -i -- wp plugin activate --all --path="$web_root/$domain"
-
-# Clean up by removing the downloaded zip file
-rm wordpress-latest.zip
-
-sudo chown -R $web_user:$web_group $web_root/$domain/
 
 echo "Site $domain has been created and configured."
