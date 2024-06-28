@@ -8,8 +8,8 @@ server {
     add_header X-Content-Type-Options "nosniff";
 
     # Logging
-    access_log [CONFIG_PATH]/logs/[DOMAIN]_access.log;
-    error_log [CONFIG_PATH]/logs/[DOMAIN]_error.log;
+    access_log [WEB_PATH]/logs/[DOMAIN]_access.log;
+    error_log [WEB_PATH]/logs/[DOMAIN]_error.log;
 
     index index.php;
 
