@@ -11,7 +11,7 @@ This project provides a set of scripts to help developers quickly set up their l
 - **Laravel Integration**: Automate the creation of Laravel projects with Composer.
 - **Customizable Configuration**: Easily customize paths, user, and group settings through a guided installer.
 - **Plugin Installation**: Automatically install WordPress plugins from ZIP files placed in the plugins folder.
-
+- **Site Deletion with Backup**: Easily delete sites with an option to back up the site and database before deletion.
 
 ## Why This Project?
 
@@ -77,6 +77,14 @@ Run the script:
 sudo ./create-wp-sites-array.sh
 ```
 
+## Deleting a Site
+To delete a site:
+Run the delete-site.sh script with your domain name:
+```bash
+sudo ./delete-site.sh domain_name.local
+```
+You will be prompted to choose whether to delete the database. If you choose yes, the database will be exported, zipped, and stored in the backup folder before deletion.
+
 ## File Structure
 
 - `nginx-conf/`: Contains Nginx configuration templates for WordPress, Laravel, and basic sites.
@@ -84,9 +92,11 @@ sudo ./create-wp-sites-array.sh
 - `create-wp-site.sh`: Script to create a WordPress site.
 - `create-laravel-site.sh`: Script to create a Laravel site.
 - `create-wp-sites-array.sh`: Script to create multiple WordPress sites from an array.
+- `delete-site.sh`: Script to delete a site and optionally back up the site and database.
 - `installer.sh`: Script to configure your environment and update other scripts with your settings.
 - `scripts/`: Folder where the customized scripts will be copied.
 - `web_root/plugins`: Folder to place WordPress plugin ZIP files to be installed during site setup.
+- `web_root/bak`: Folder where backups will be stored when sites are deleted.
 
 ## FastCGI Pass Configuration
 
