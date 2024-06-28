@@ -10,6 +10,8 @@ fi
 # Configuration paths
 conf_path="/etc/nginx/conf.d"
 web_root="/var/www"
+sites_root="/var/www/sites"
+site_root="$sites_root/$domain"
 plugin_path="$web_root/plugins"  # Update this path with the actual path to your plugins
 
 # Permissions
@@ -45,14 +47,14 @@ then
 fi
 
 # Install Laravel using Composer
-composer create-project --prefer-dist laravel/laravel "$web_root/$domain"
+composer create-project --prefer-dist laravel/laravel "$site_root"
 
 # Set the necessary file permissions
-sudo chown -R $web_user:$web_group "$web_root/$domain"
-sudo chmod -R 775 "$web_root/$domain/storage" "$web_root/$domain/bootstrap/cache"
+sudo chown -R $web_user:$web_group "$site_root"
+sudo chmod -R 775 "$site_root/storage" "$site_root/bootstrap/cache"
 
 # Update the .env file with the database credentials
-env_file="$web_root/$domain/.env"
+env_file="$site_root/.env"
 sed -i "s/DB_DATABASE=laravel/DB_DATABASE=$db_name/" $env_file
 sed -i "s/DB_USERNAME=root/DB_USERNAME=$db_user/" $env_file
 sed -i "s/DB_PASSWORD=/DB_PASSWORD=$db_pass/" $env_file
@@ -65,8 +67,9 @@ conf_template="$conf_path/base.conf.template"
 conf_target="$conf_path/$domain.conf"
 sudo cp $conf_template $conf_target
 sudo sed -i "s/\[DOMAIN\]/$domain/g" $conf_target
-sudo sed -i "s|\[WEB_ROOT\]|$web_root/$domain/public|g" $conf_target  # Point to the public directory of Laravel
-sudo sed -i "s|\[CONFIG_PATH\]|$conf_path|g" $conf_target
+sudo sed -i "s/\[SITE_ROOT\]/$site_root/public/g" $conf_target
+sudo sed -i "s/\[WEB_ROOT\]/$web_root/g" $conf_target
+sudo sed -i "s/\[CONFIG_ROOT\]/$conf_path/g" $conf_target
 
 # Create a new MySQL database
 mysql -u root -p -e "CREATE DATABASE $db_name;"

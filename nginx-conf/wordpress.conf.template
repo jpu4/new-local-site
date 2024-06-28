@@ -2,11 +2,11 @@ server {
     listen 80;
     server_name [DOMAIN];
 
-    root [WEB_ROOT];
+    root [SITE_ROOT];
     index index.php index.html index.htm;
 
-    access_log [WEB_PATH]/logs/[DOMAIN]_access.log;
-    error_log [WEB_PATH]/logs/[DOMAIN]_error.log;
+    access_log [WEB_ROOT]/logs/[DOMAIN]_access.log;
+    error_log [WEB_ROOT]/logs/[DOMAIN]_error.log;
 
     # Main location block
     location / {

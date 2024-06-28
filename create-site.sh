@@ -10,6 +10,8 @@ fi
 # Configuration paths
 conf_path="/etc/nginx/conf.d"
 web_root="/var/www"
+sites_root="/var/www/sites"
+site_root="$sites_root/$domain"
 plugin_path="$web_root/plugins"  # Update this path with the actual path to your plugins
 
 # Permissions
@@ -31,10 +33,10 @@ site_pass=$db_pass
 site_email="support@$domain"
 
 # Create the web root directory for the domain
-mkdir -p "$web_root/$domain"
+mkdir -p "$site_root"
 
 # Create a basic index.php file
-echo "<?php echo '$domain ready for development';" > "$web_root/$domain/index.php"
+echo "<?php echo '$domain ready for development';" > "$site_root/index.php"
 
 # Update /etc/hosts file
 echo "127.0.0.1 $domain" | sudo tee -a /etc/hosts
@@ -44,14 +46,15 @@ conf_template="$conf_path/base.conf.template"
 conf_target="$conf_path/$domain.conf"
 sudo cp $conf_template $conf_target
 sudo sed -i "s/\[DOMAIN\]/$domain/g" $conf_target
-sudo sed -i "s|\[WEB_ROOT\]|$web_root/$domain|g" $conf_target  # Point to the correct web root directory
-sudo sed -i "s|\[CONFIG_PATH\]|$conf_path|g" $conf_target
+sudo sed -i "s/\[SITE_ROOT\]/$site_root/g" $conf_target
+sudo sed -i "s/\[WEB_ROOT\]/$web_root/g" $conf_target
+sudo sed -i "s/\[CONFIG_ROOT\]/$conf_path/g" $conf_target
 
 # Create a new MySQL database
 mysql -u root -p -e "CREATE DATABASE $db_name;"
 
 # Set the necessary file permissions
-sudo chown -R $web_user:$web_group "$web_root/$domain"
+sudo chown -R $web_user:$web_group "$site_root"
 
 # Reset nginx
 sudo systemctl reload nginx

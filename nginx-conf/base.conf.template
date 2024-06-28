@@ -2,14 +2,14 @@ server {
     listen 80;
     server_name [DOMAIN];  # Replace with your domain
 
-    root [WEB_ROOT]; 
+    root [SITE_ROOT]; 
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";
 
     # Logging
-    access_log [WEB_PATH]/logs/[DOMAIN]_access.log;
-    error_log [WEB_PATH]/logs/[DOMAIN]_error.log;
+    access_log [WEB_ROOT]/logs/[DOMAIN]_access.log;
+    error_log [WEB_ROOT]/logs/[DOMAIN]_error.log;
 
     index index.php;
 
