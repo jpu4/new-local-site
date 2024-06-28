@@ -5,8 +5,8 @@ server {
     root [WEB_ROOT];
     index index.php index.html index.htm;
 
-    access_log [CONFIG_PATH]/logs/[DOMAIN]_access.log;
-    error_log [CONFIG_PATH]/logs/[DOMAIN]_error.log;
+    access_log [WEB_PATH]/logs/[DOMAIN]_access.log;
+    error_log [WEB_PATH]/logs/[DOMAIN]_error.log;
 
     # Main location block
     location / {
