@@ -16,6 +16,7 @@ This project provides a set of scripts to help developers quickly set up their l
 Setting up a local development environment can be time-consuming and prone to inconsistencies. This project aims to streamline the process, ensuring a standardized setup across multiple projects. It saves time and reduces the potential for errors by automating repetitive tasks.
 
 ## Installation
+> `sudo` is required.
 
 1. Clone the repository to your local machine:
    ```bash
@@ -25,7 +26,7 @@ Setting up a local development environment can be time-consuming and prone to in
 2. Run the installer script to configure your environment:
 
 ```bash
-./installer.sh
+sudo ./installer.sh
 ```
 
 Follow the prompts to enter your preferred configuration settings, including:
@@ -44,7 +45,7 @@ To create a basic site:
 Run the `create-site.sh` script with your desired domain name:
 
 ```bash
-./create-site.sh domain_name.local
+sudo ./create-site.sh domain_name.local
 ```
 
 ### Creating a WordPress Site
@@ -53,7 +54,7 @@ To create a WordPress site:
 Run the `create-wp-site.sh` script with your desired domain name:
 
 ```bash
-./create-wp-site.sh domain_name.local
+sudo ./create-wp-site.sh domain_name.local
 ```
 
 ### Creating a Laravel Site
@@ -62,7 +63,7 @@ To create a Laravel site:
 Run the `create-laravel-site.sh` script with your desired domain name:
 
 ```bash
-./create-laravel-site.sh domain_name.local
+sudo ./create-laravel-site.sh domain_name.local
 ```
 
 ### Creating Multiple WordPress Sites
@@ -71,7 +72,7 @@ To create multiple WordPress sites:
 Update the array of domain names in `create-wp-sites-array.sh`.
 Run the script:
 ```bash
-./create-wp-sites-array.sh
+sudo ./create-wp-sites-array.sh
 ```
 
 ## File Structure
