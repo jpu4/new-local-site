@@ -10,6 +10,8 @@ This project provides a set of scripts to help developers quickly set up their l
 - **WordPress Integration**: Automate the download, configuration, and setup of WordPress sites.
 - **Laravel Integration**: Automate the creation of Laravel projects with Composer.
 - **Customizable Configuration**: Easily customize paths, user, and group settings through a guided installer.
+- **Plugin Installation**: Automatically install WordPress plugins from ZIP files placed in the plugins folder.
+
 
 ## Why This Project?
 
@@ -83,6 +85,8 @@ sudo ./create-wp-sites-array.sh
 - `create-laravel-site.sh`: Script to create a Laravel site.
 - `create-wp-sites-array.sh`: Script to create multiple WordPress sites from an array.
 - `installer.sh`: Script to configure your environment and update other scripts with your settings.
+- `scripts/`: Folder where the customized scripts will be copied.
+- `web_root/plugins`: Folder to place WordPress plugin ZIP files to be installed during site setup.
 
 ## FastCGI Pass Configuration
 
