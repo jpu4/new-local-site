@@ -38,7 +38,7 @@ read -p "Enter your database password (default: my_local_dev_pass): " db_pass
 db_pass=${db_pass:-my_local_dev_pass}
 
 # Prompt user for the scripts folder
-read -p "Enter the folder where you want the scripts copied (default: ./scripts): " scripts_folder
+read -p "Enter the folder where you want the scripts copied (default: /var/www/scripts): " scripts_folder
 scripts_folder=${scripts_folder:-/var/www/scripts}
 
 # Create the scripts folder if it doesn't exist
