@@ -79,5 +79,6 @@ chmod +x "$scripts_folder/create-site.sh" "$scripts_folder/create-laravel-site.s
 # Change ownership of the scripts folder to the current user
 current_user=$(whoami)
 sudo chown -R $current_user:$current_user "$scripts_folder"
+sudo chown -R $web_user:$web_group "$sites_root"
 
 echo "Installer script has completed successfully."
