@@ -22,6 +22,9 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+# Domain name parameter
+domain=$1
+
 # Configuration paths
 conf_path="/etc/nginx/conf.d"
 web_root="/var/www"
@@ -32,9 +35,6 @@ plugin_path="$web_root/plugins"  # Update this path with the actual path to your
 # Permissions
 web_user="www-data"
 web_group="www-data"
-
-# Domain name parameter
-domain=$1
 
 # Database credentials
 db_user="my_local_dev_user"
@@ -87,10 +87,10 @@ echo "127.0.0.1 $domain" | sudo tee -a /etc/hosts
 conf_template="$conf_path/wordpress.conf.template"
 conf_target="$conf_path/$domain.conf"
 sudo cp $conf_template $conf_target
-sudo sed -i "s/\[DOMAIN\]/$domain/g" $conf_target
-sudo sed -i "s/\[SITE_ROOT\]/$site_root/g" $conf_target
-sudo sed -i "s/\[WEB_ROOT\]/$web_root/g" $conf_target
-sudo sed -i "s/\[CONFIG_ROOT\]/$conf_path/g" $conf_target
+sudo sed -i "s|\[DOMAIN\]|$domain|g" $conf_target
+sudo sed -i "s|\[SITE_ROOT\]|$sites_root\/$domain|g" $conf_target
+sudo sed -i "s|\[WEB_ROOT\]|$web_root|g" $conf_target
+sudo sed -i "s|\[CONFIG_ROOT\]|$conf_path|g" $conf_target
 
 # Create a new MySQL database
 mysql -u root -p -e "CREATE DATABASE $db_name;"
@@ -147,4 +147,10 @@ sudo -u $web_user -i -- wp plugin update --all --path="$site_root"
 # Activate all plugins using WP-CLI
 sudo -u $web_user -i -- wp plugin activate --all --path="$site_root"
 
+sudo chown -R $web_user:$web_group $site_root/
+
 echo "Site $domain has been created and configured."
+
+# Output the site URL
+echo "Your new site is ready at: http://$domain"
+
