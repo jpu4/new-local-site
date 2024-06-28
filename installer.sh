@@ -14,6 +14,9 @@ mkdir -p "$web_root/plugins"
 # Create the logs folder if it doesn't exist
 mkdir -p "$web_root/logs"
 
+# Create the backup folder if it doesn't exist
+mkdir -p "$web_root/bak"
+
 # Prompt user for the sites directory
 read -p "Enter your web sites directory (default: /var/www/sites): " sites_root
 sites_root=${sites_root:-/var/www/sites}
@@ -85,6 +88,7 @@ echo "Scripts folder: $scripts_folder"
 sudo chown -R $current_user:$current_user "$scripts_folder"
 sudo chown -R $web_user:$web_group "$sites_root"
 sudo chown -R $current_user:$current_user "$web_root/plugins"
+sudo chown -R $current_user:$current_user "$web_root/bak"
 sudo chown -R $current_user:$current_user "$web_root/logs"
 
 echo "Installer script has completed successfully."
